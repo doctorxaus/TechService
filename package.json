@@ -4,7 +4,8 @@
   "description": "Kompyuter xizmatlari veb-sayti",
   "main": "server/server.js",
   "scripts": {
-    "start": "node server/server.js"
+    "start": "node server/server.js",
+    "test": "jest"
   },
   "keywords": [
     "computer",
@@ -17,5 +18,9 @@
   "dependencies": {
     "express": "^4.21.2",
     "multer": "^2.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.1.1"
   }
 }

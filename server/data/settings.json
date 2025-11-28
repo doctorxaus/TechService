@@ -1,9 +1,6 @@
 {
-  "monday_friday": "09:00 - 18:00",
-  "saturday": "10:00 - 15:00",
-  "sunday": "Dam olish kuni",
   "workingHours": {
-    "days": "dush-shan",
+    "days": "dush-juma",
     "startTime": "09:00",
     "endTime": "18:00"
   }

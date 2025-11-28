@@ -4,23 +4,52 @@ const path = require('path');
 const multer = require('multer');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3003;
 
 app.use(express.json());
+// Serve static files from public directory
 app.use(express.static(path.join(__dirname, '../public')));
 
-const UPLOADS_DIR = path.join(__dirname, '../public/uploads/chat-images');
-if (!fs.existsSync(UPLOADS_DIR)) {
-    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-    console.log(`Created directory: ${UPLOADS_DIR}`);
-} else {
-    console.log(`Directory already exists: ${UPLOADS_DIR}`);
+// Determine environment and paths
+const isVercel = process.env.VERCEL === '1';
+const TMP_DIR = isVercel ? '/tmp' : path.join(__dirname, '../public/uploads/chat-images');
+const DATA_DIR = isVercel ? '/tmp' : path.join(__dirname, 'data');
+
+// Ensure directories exist
+if (!fs.existsSync(TMP_DIR)) {
+    try {
+        fs.mkdirSync(TMP_DIR, { recursive: true });
+        console.log(`Created directory: ${TMP_DIR}`);
+    } catch (err) {
+        console.error(`Error creating directory ${TMP_DIR}:`, err);
+    }
 }
 
+// Helper to get file path
+const getFilePath = (filename) => {
+    // For local dev, keep original structure. For Vercel, everything goes to /tmp or we read initial data from source
+    if (!isVercel) {
+        return path.join(DATA_DIR, filename);
+    }
+
+    // On Vercel:
+    // 1. Try to read from /tmp (if we wrote it there in this warm instance)
+    const tmpPath = path.join(TMP_DIR, filename);
+    if (fs.existsSync(tmpPath)) {
+        return tmpPath;
+    }
+
+    // 2. Fallback to source file (read-only initial data)
+    // Note: We can't write back to this, so we'll copy to /tmp on first write
+    return path.join(__dirname, 'data', filename);
+};
 
 const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, TMP_DIR);
+    },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname.replace(/\s+/g, '_')); // Probelni almashtirish
+        cb(null, Date.now() + '-' + file.originalname.replace(/\s+/g, '_'));
     }
 });
 
@@ -38,18 +67,21 @@ const upload = multer({
     limits: { fileSize: 5 * 1024 * 1024 }
 });
 
-const SERVICES_FILE = path.join(__dirname, 'data/services.json');
-const MESSAGES_FILE = path.join(__dirname, 'data/messages.json');
-const SETTINGS_FILE = path.join(__dirname, 'data/settings.json');
+const readData = (filename, callback) => {
+    const filePath = getFilePath(filename);
 
-const readData = (filePath, callback) => {
     fs.readFile(filePath, 'utf8', (err, data) => {
         if (err) {
+            // If file doesn't exist in /tmp or source, return empty default
+            if (err.code === 'ENOENT') {
+                const defaultData = (filename === 'messages.json' || filename === 'services.json') ? [] : {};
+                return callback(null, defaultData);
+            }
             console.error("Error reading file:", filePath, err);
             return callback(err, null);
         }
         try {
-            const jsonData = data ? JSON.parse(data) : (filePath.endsWith('messages.json') || filePath.endsWith('services.json') ? [] : {});
+            const jsonData = data ? JSON.parse(data) : ((filename === 'messages.json' || filename === 'services.json') ? [] : {});
             callback(null, jsonData);
         } catch (parseErr) {
             console.error("Error parsing JSON from file:", filePath, parseErr);
@@ -58,7 +90,20 @@ const readData = (filePath, callback) => {
     });
 };
 
-const writeData = (filePath, data, callback) => {
+const writeData = (filename, data, callback) => {
+    // Always write to /tmp on Vercel
+    const writeDir = isVercel ? TMP_DIR : DATA_DIR;
+    const filePath = path.join(writeDir, filename);
+
+    // Ensure directory exists (redundant check but safe)
+    if (!fs.existsSync(writeDir)) {
+        try {
+            fs.mkdirSync(writeDir, { recursive: true });
+        } catch (e) {
+            console.error("Failed to create write dir:", e);
+        }
+    }
+
     fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf8', (err) => {
         if (err) {
             console.error("Error writing file:", filePath, err);
@@ -69,21 +114,21 @@ const writeData = (filePath, data, callback) => {
 };
 
 app.get('/api/services', (req, res) => {
-    readData(SERVICES_FILE, (err, services) => {
+    readData('services.json', (err, services) => {
         if (err) return res.status(500).json({ message: "Error reading services data" });
         res.json(services);
     });
 });
 
-app.post('/api/services', (req, res) => { // For admin to add a service
-    readData(SERVICES_FILE, (err, services) => {
+app.post('/api/services', (req, res) => {
+    readData('services.json', (err, services) => {
         if (err) return res.status(500).json({ message: "Error reading services data" });
 
         const newService = req.body;
         newService.id = Date.now();
         services.push(newService);
 
-        writeData(SERVICES_FILE, services, (writeErr) => {
+        writeData('services.json', services, (writeErr) => {
             if (writeErr) return res.status(500).json({ message: "Error saving new service" });
             res.status(201).json(newService);
         });
@@ -91,14 +136,14 @@ app.post('/api/services', (req, res) => { // For admin to add a service
 });
 
 app.get('/api/chat/messages', (req, res) => {
-    readData(MESSAGES_FILE, (err, messages) => {
+    readData('messages.json', (err, messages) => {
         if (err) return res.status(500).json({ message: "Error reading messages" });
         res.json(messages);
     });
 });
 
 app.post('/api/chat/messages', upload.single('chatImage'), (req, res) => {
-    readData(MESSAGES_FILE, (err, messages) => {
+    readData('messages.json', (err, messages) => {
         if (err) {
             if (req.file) fs.unlinkSync(req.file.path);
             return res.status(500).json({ message: "Error reading messages data" });
@@ -114,7 +159,11 @@ app.post('/api/chat/messages', upload.single('chatImage'), (req, res) => {
         };
 
         if (req.file) {
-            newMessage.imageUrl = `/uploads/chat-images/${req.file.filename}`;
+            // On Vercel, we can't serve files from /tmp directly via express.static easily without a custom route
+            // For now, we'll just return the filename and hope the client can handle it or we add a route
+            // But standard static serving won't work for /tmp files.
+            // We will add a specific route to serve images from /tmp if on Vercel.
+            newMessage.imageUrl = `/api/uploads/${req.file.filename}`;
         }
 
         if (!newMessage.text && !newMessage.imageUrl) {
@@ -124,7 +173,7 @@ app.post('/api/chat/messages', upload.single('chatImage'), (req, res) => {
 
         messages.push(newMessage);
 
-        writeData(MESSAGES_FILE, messages, (writeErr) => {
+        writeData('messages.json', messages, (writeErr) => {
             if (writeErr) {
                 if (req.file) fs.unlinkSync(req.file.path);
                 return res.status(500).json({ message: "Error saving message" });
@@ -134,20 +183,32 @@ app.post('/api/chat/messages', upload.single('chatImage'), (req, res) => {
     });
 });
 
+// Special route to serve uploaded images from /tmp on Vercel
+app.get('/api/uploads/:filename', (req, res) => {
+    const filename = req.params.filename;
+    const filePath = isVercel ? path.join(TMP_DIR, filename) : path.join(__dirname, '../public/uploads/chat-images', filename);
+
+    if (fs.existsSync(filePath)) {
+        res.sendFile(filePath);
+    } else {
+        res.status(404).send('Image not found');
+    }
+});
+
 app.get('/api/settings/working-hours', (req, res) => {
-    readData(SETTINGS_FILE, (err, settings) => {
+    readData('settings.json', (err, settings) => {
         if (err) return res.status(500).json({ message: "Error reading settings" });
         res.json(settings.workingHours || { days: 'Noma\'lum', startTime: '--:--', endTime: '--:--' });
     });
 });
 
 app.put('/api/settings/working-hours', (req, res) => {
-    readData(SETTINGS_FILE, (err, settings) => {
+    readData('settings.json', (err, settings) => {
         if (err) return res.status(500).json({ message: "Error reading settings" });
 
         settings.workingHours = req.body;
 
-        writeData(SETTINGS_FILE, settings, (writeErr) => {
+        writeData('settings.json', settings, (writeErr) => {
             if (writeErr) return res.status(500).json({ message: "Error updating settings" });
             res.json(settings.workingHours);
         });
@@ -180,6 +241,13 @@ app.use((error, req, res, next) => {
     next();
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server running on http://localhost:${PORT}`);
+    });
+}
+
+module.exports = app;
+
+
+

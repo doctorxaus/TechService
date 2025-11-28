@@ -1,38 +1,44 @@
 [
   {
     "id": 1,
-    "name": "Windows O'rnatish",
-    "description": "Windows 10/11 toza o'rnatish, drayverlar va asosiy dasturlar.",
-    "price": 100000
+    "name": "Kompyuterga operatsion tizim o'rnatish",
+    "description": "Windows yoki Linux operatsion tizimini professional tarzda o'rnatish va sozlash.",
+    "price": 500000,
+    "durationMinutes": 60
   },
   {
     "id": 2,
-    "name": "Antivirus O'rnatish",
-    "description": "Professional antivirus dasturlari o'rnatish va sozlash.",
-    "price": 50000
+    "name": "Viruslarni tozalash",
+    "description": "Kompyuteringizdan zararli dasturlar va viruslarni tozalash va xavfsizlikni ta'minlash.",
+    "price": 200000,
+    "durationMinutes": 45
   },
   {
     "id": 3,
-    "name": "Ma'lumot Tiklash",
-    "description": "O'chirilgan yoki buzilgan fayllarni tiklash xizmati.",
-    "price": 150000
+    "name": "Kompyuter qismlarini almashtirish",
+    "description": "SSD, RAM yoki boshqa komponentlarni almashtirish va sozlash.",
+    "price": 300000,
+    "durationMinutes": 90
   },
   {
     "id": 4,
-    "name": "Kompyuter Tozalash",
-    "description": "Ichki qismlarni tozalash va texnik xizmat ko'rsatish.",
-    "price": 75000
+    "name": "Ma'lumotlarni zaxiralash va tiklash",
+    "description": "Muhim fayllaringizni zaxiralash va kerak bo'lganda tiklash xizmati.",
+    "price": 150000,
+    "durationMinutes": 30
   },
   {
     "id": 5,
-    "name": "Dastur O'rnatish",
-    "description": "Kerakli dasturlar o'rnatish va sozlash.",
-    "price": 30000
+    "name": "Internet va tarmoq muammolarini hal qilish",
+    "description": "Internet ulanishini sozlash va tarmoq muammolarini bartaraf etish.",
+    "price": 250000,
+    "durationMinutes": 40
   },
   {
     "id": 6,
-    "name": "Internet Sozlash",
-    "description": "Internet ulanish va Wi-Fi sozlash xizmati.",
-    "price": 40000
+    "name": "Kompyuter tozalash va texnik xizmat",
+    "description": "Ichki va tashqi qismlarni changdan tozalash, texnik holatini tekshirish.",
+    "price": 100000,
+    "durationMinutes": 30
   }
 ]

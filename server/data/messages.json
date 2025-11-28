@@ -1,86 +1,72 @@
 [
   {
-    "id": 1748404626973,
+    "id": 1748938598286,
     "user": "user",
-    "text": "Men \"Internet Sozlash\" xizmatini (40,000 so'm) sotib olmoqchiman. Xizmat ID: 6",
+    "text": "Men \"Viruslarni tozalash\" xizmatini (200,000 so'm) sotib olmoqchiman. Xizmat ID: 2",
     "imageUrl": null,
-    "timestamp": "28/05/2025, 08:57:06"
+    "timestamp": "03/06/2025, 13:16:38"
   },
   {
-    "id": 1748404912732,
-    "user": "user",
-    "text": "Men \"Antivirus O'rnatish\" xizmatini (50,000 so'm) sotib olmoqchiman. Xizmat ID: 2",
+    "id": 1748938634639,
+    "user": "admin",
+    "text": "xozr boglanamiz!",
     "imageUrl": null,
-    "timestamp": "28/05/2025, 09:01:52"
+    "timestamp": "03/06/2025, 13:17:14"
   },
   {
-    "id": 1748404930276,
+    "id": 1749684831703,
     "user": "user",
-    "text": "fs",
+    "text": "Men \"Ma'lumotlarni zaxiralash va tiklash\" xizmatini (150,000 so'm) sotib olmoqchiman. Xizmat ID: 4",
     "imageUrl": null,
-    "timestamp": "28/05/2025, 09:02:10"
+    "timestamp": "12/06/2025, 04:33:51"
   },
   {
-    "id": 1748404931766,
+    "id": 1749684837439,
     "user": "user",
-    "text": "fs",
+    "text": "sgirigrme",
     "imageUrl": null,
-    "timestamp": "28/05/2025, 09:02:11"
+    "timestamp": "12/06/2025, 04:33:57"
   },
   {
-    "id": 1748404932725,
-    "user": "user",
-    "text": "fs",
+    "id": 1749684855020,
+    "user": "admin",
+    "text": "seneguei 1213235",
     "imageUrl": null,
-    "timestamp": "28/05/2025, 09:02:12"
+    "timestamp": "12/06/2025, 04:34:15"
   },
   {
-    "id": 1748404934096,
-    "user": "user",
-    "text": "fs",
+    "id": 1756294326119,
+    "user": "admin",
+    "text": "Sentabrgacha tuzaladi",
     "imageUrl": null,
-    "timestamp": "28/05/2025, 09:02:14"
+    "timestamp": "27/08/2025, 16:32:06"
   },
   {
-    "id": 1748404935264,
+    "id": 1756294353326,
     "user": "user",
-    "text": "fs",
+    "text": "raxmat Abduqodir !",
     "imageUrl": null,
-    "timestamp": "28/05/2025, 09:02:15"
+    "timestamp": "27/08/2025, 16:32:33"
   },
   {
-    "id": 1748404936154,
+    "id": 1756294617037,
     "user": "user",
-    "text": "fs",
+    "text": "Men \"Kompyuter tozalash va texnik xizmat\" xizmatini (100,000 so'm) sotib olmoqchiman. Xizmat ID: 6",
     "imageUrl": null,
-    "timestamp": "28/05/2025, 09:02:16"
+    "timestamp": "27/08/2025, 16:36:57"
   },
   {
-    "id": 1748404937160,
-    "user": "user",
-    "text": "fs",
+    "id": 1756294749252,
+    "user": "admin",
+    "text": "buyurtmangiz qabul qilindi, kompyuterni 3- filialimizga olib kelishingiz mumkin",
     "imageUrl": null,
-    "timestamp": "28/05/2025, 09:02:17"
+    "timestamp": "27/08/2025, 16:39:09"
   },
   {
-    "id": 1748404938240,
+    "id": 1763031984055,
     "user": "user",
-    "text": "fs",
+    "text": "menga yordam kerak. mendagi muammo xizmatlar bo'limida yo'q ekan",
     "imageUrl": null,
-    "timestamp": "28/05/2025, 09:02:18"
-  },
-  {
-    "id": 1748404938992,
-    "user": "user",
-    "text": "fs",
-    "imageUrl": null,
-    "timestamp": "28/05/2025, 09:02:18"
-  },
-  {
-    "id": 1748404939784,
-    "user": "user",
-    "text": "fs",
-    "imageUrl": null,
-    "timestamp": "28/05/2025, 09:02:19"
+    "timestamp": "13/11/2025, 16:06:24"
   }
 ]
